@@ -1,0 +1,66 @@
+
+			 colorgcc version 1.3.2
+
+Introduction
+============
+
+colorgcc is a perl wrapper that colorizes the output of the 
+gcc/g++ compiler. 
+
+
+Installing
+==========
+
+Make sure you have the ANSIColor.pm module, and a terminal that
+groks color escape sequences. (The ANSIColor.pm module may be
+found on www.cpan.org.)
+
+In a directory that occurs in your PATH _before_ the directory
+where the compiler lives, create a softlink to colorgcc for
+each compiler you want to colorize:
+
+    g++ -> colorgcc
+    gcc -> colorgcc
+    cc  -> colorgcc
+    etc.
+
+When "g++" is invoked, colorgcc is run instead.  colorgcc looks at the
+program name to figure out which compiler to use. 
+
+Copy the sample colorgccrc file to $HOME/.colorgccrc and make sure the
+absolute paths for the compilers are correct for your system.
+See the comments in the sample .colorgccrc for more information.
+
+
+Note:
+
+colorgcc will only emit color codes if:
+
+   (1) Its STDOUT is a tty and
+   (2) the value of $TERM is not listed in the "nocolor" option.
+
+If colorgcc colorizes the output, the compiler's STDERR will be
+combined with STDOUT. Otherwise, colorgcc just passes the output from
+the compiler through without modification.
+
+
+Gotchas
+=======
+
+   Packages that use autoconf ("configure") apparently determine
+the default location of $prefix from the location of gcc. If you
+create the softlinks as recommended above, $prefix will become
+_that_ directory instead of what it should be (/usr/local, for
+example). 
+
+   It's easy to get around this by giving an explicit --prefix=/usr/local
+when you configure a package, but it's a minor annoyance.
+
+
+Questions, problems
+===================
+
+Jamie Moyers <jmoyers@geeks.com>
+
+
+
