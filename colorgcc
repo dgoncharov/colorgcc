@@ -448,6 +448,10 @@ elsif ($progName =~ "^g?xl[cC].*" || $^O eq "aix")
       {
           print($colors{"errorMessageColor"}, $_, color("reset"));
       }
+      elsif (m/\(I\) INFORMATION:/)
+      {
+         print($colors{"noteMessageColor"}, "$_", color("reset"));
+      }
       else # Anything else.
       {
          # Doesn't seem to be a warning or an error. Print normally.
