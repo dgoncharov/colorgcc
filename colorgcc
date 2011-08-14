@@ -297,7 +297,8 @@ while(<GCCOUT>)
 	 print($colors{"warningNumberColor"}, "$field2:", color("reset"));
 	 srcscan($field3, $colors{"warningMessageColor"});
       }
-      elsif ($field3 =~ m/\s+error:.*/)
+         # main.cpp:145:2: #error print() is not implemented for this system
+         elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/)
 	{
 	 # Error
 	 print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
