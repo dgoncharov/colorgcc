@@ -326,7 +326,8 @@ while(<GCCOUT>)
    }
    else # Anything else.
    {
-         srcscan($_, color("reset"));
+         # Doesn't seem to be a warning or an error. Print normally.
+         print(color("reset"), $_);
    }
 }
 }
