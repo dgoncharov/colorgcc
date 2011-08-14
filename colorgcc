@@ -196,7 +196,7 @@ sub srcscan
    }
 
    # Single line quoting.
-   $line =~ s/\`(.*?)\'/\`$srcon$1$srcoff\'/g;
+   $line =~ s/[\`\'](.*?)\'/\`$srcon$1$srcoff\'/g;
 
    print($line, color("reset"));
 }
