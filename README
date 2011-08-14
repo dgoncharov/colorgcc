@@ -1,8 +1,9 @@
 This is a fork of colorgcc which supports gcc, sun, ibm, hp and intel
-compilers.
+compilers and includes a few enhancements in gcc support.
 This version includes patches made by the gentoo developers to the original
 colorgcc-1.3.2.
-sun, ibm, hp and intel support added by Dmitry Goncharov.
+sun, ibm, hp and intel support and gcc enhancements added by Dmitry Goncharov.
+
 
 # colorgcc
 #
