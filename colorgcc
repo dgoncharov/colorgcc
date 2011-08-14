@@ -312,6 +312,15 @@ while(<GCCOUT>)
       }
       print("\n");
    }
+      elsif (m/^(.*from.+?):(\d)+,$/)
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         # from /home/dgoncharov/src/main.cpp:63,
+         print($colors{"noteFileNameColor"}, "$field1:", color("reset"));
+         print($colors{"noteNumberColor"}, "$field2:", color("reset"));
+         print("\n");
+      }
    elsif (m/^:.+`.*'$/) # filename:message:
    {
       srcscan($_, $colors{"warningMessageColor"});
