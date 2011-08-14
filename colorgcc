@@ -280,6 +280,8 @@ else
 }
 
 # Colorize the output from the compiler.
+if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
+{
 while(<GCCOUT>)
 {
    if (m#^(.+?\.[^:/ ]+):([0-9]+):(.*)$#) # filename:lineno:message
@@ -325,6 +327,274 @@ while(<GCCOUT>)
    else # Anything else.
    {
       srcscan($_, undef);
+   }
+}
+}
+elsif ($progName eq "CC" || $progName =~ "^sun[cC]" || $^O eq "solaris")
+{
+   # Colorize the output from the compiler.
+   while(<GCCOUT>)
+   {
+      # "main.cpp", line 8: Warning: Implicit int is not supported in C++.
+      # "main.cpp", line 9: Error: The function "bar" must have a prototype.
+      # "main.cpp":8: Warning: Implicit int is not supported in C++.
+      # "main.cpp":9: Error: The function "bar" must have a prototype.
+      # CC: Warning: "-g0" overrides "-g", debugging information will be
+      # produced. Note, inlining will not be disabled.
+      # "m.cpp", line 92: Warning (Anachronism): Formal argument 2 of type
+      if (m/^(\".+?\",)( line [0-9]+:)(.+)$/) # filename:lineno:message
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+
+         if ($field3 =~ m/Warning/)
+         {
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+         }
+         else
+         {
+            # Error
+            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+         }
+         print("\n");
+      }
+      # ld: fatal: file test.mk: unknown file type
+      # ld: fatal: File processing errors. No output written to a.out
+      elsif (m/^ld: fatal: .+$/)
+      {
+         print($colors{"errorMessageColor"}, $_, color("reset"));
+      }
+      elsif (m/^CC: Warning: (.+)$/)
+      {
+         print($colors{"warningMessageColor"}, $_, color("reset"));
+      }
+      else # Anything else.
+      {
+         # Doesn't seem to be a warning or an error. Print normally.
+         print(color("reset"), $_);
+      }
+   }
+}
+elsif ($progName =~ "^g?xl[cC].*" || $^O eq "aix")
+{
+   # Colorize the output from the compiler.
+   while(<GCCOUT>)
+   {
+      # "test.cpp", line 9.12: 1540-0274 (S) The name lookup for "bar" did not
+      # find a
+      # declaration.
+      # "test.cpp", line 15.1: 1540-1101 (W) A return value of type "int" is
+      # expected.
+      # "test.cpp", line 22.17: 1540-0256 (S) A parameter of type "const char
+      # &" cannot
+      # be initialized with an expression of type "const char [5]".
+      # "test.cpp", line 22.17: 1540-1205 (I) The error occurred while
+      # converting to
+      # parameter 1 of "std::vector<char,std::allocator<char>
+      # >::push_back(const char
+      # &)".
+      if (m/^(\".+?\",)( line [0-9\.]+:)( [-0-9]+.+)$/) # filename:lineno:message
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+
+         if ($field3 =~ m/\((W|I)\)/)
+         {
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+         }
+         else
+         {
+            # Error
+            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+         }
+         print("\n");
+      }
+      # /bb/util/version10-082009/usr/vacpp/bin/.orig/xlC_r: 1501-218 (W) file
+      # test.mk contains an incorrect file suffix
+      elsif (m/^.+?: [-0-9]+ \(W\).+$/)
+      {
+         print($colors{"warningMessageColor"}, $_, color("reset"));
+      }
+      # ld: 0711-715 ERROR: File test.mk cannot be processed.
+      #  The file must be an object file, an import file, or an archive.
+      elsif (m/^ld: [-0-9]+ ERROR: .+$/)
+      {
+          print($colors{"errorMessageColor"}, $_, color("reset"));
+      }
+      elsif (m/The file must be an object file, an import file, or an/)
+      {
+          print($colors{"errorMessageColor"}, $_, color("reset"));
+      }
+      else # Anything else.
+      {
+         # Doesn't seem to be a warning or an error. Print normally.
+         print(color("reset"), $_);
+      }
+   }
+}
+elsif ($progName eq "aCC" || $^O eq "hpux")
+{
+   # Colorize the output from the compiler.
+   while(<GCCOUT>)
+   {
+      # "test.cpp", line 7: warning #2837-D: omission of explicit type is
+      # nonstandard
+      if (m/^(\".+?\",)( line [0-9]+:)(.+)$/) # filename:lineno:message
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+
+         if ($field3 =~ m/warning #/)
+         {
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+            print($colors{"warningMessageColor"}, "\n", color("reset"));
+            while(<GCCOUT>)
+            {
+               if (m/^$/)
+               {
+                  last;
+               }
+               print($colors{"introMessageColor"}, $_, color("reset"));
+            }
+         }
+         else
+         {
+            # Error
+            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+            print($colors{"errorMessageColor"}, "\n", color("reset"));
+            while(<GCCOUT>)
+            {
+               if (m/^$/)
+               {
+                  last;
+               }
+               print($colors{"introMessageColor"}, $_, color("reset"));
+            }
+         }
+         print("\n");
+      }
+      # 5 errors detected in the compilation of "test.cpp".
+      elsif (m/^[0-9]+ errors detected in the compilation of .+$/)
+      {
+         print($colors{"errorMessageColor"}, $_, color("reset"));
+      }
+      # ld: Mismatched ABI (not an ELF file) for test.mk
+      # Fatal error.
+      elsif (m/ld: Mismatched ABI/)
+      {
+         print($colors{"errorMessageColor"}, $_, color("reset"));
+      }
+      elsif (m/Fatal error/)
+      {
+         print($colors{"errorMessageColor"}, $_, color("reset"));
+      }
+      else # Anything else.
+      {
+         # Doesn't seem to be a warning or an error. Print normally.
+         print(color("reset"), $_);
+      }
+   }
+}
+elsif ($progName eq "icc" || $progName eq "icpc")
+{
+   # Colorize the output from the compiler.
+   while(<GCCOUT>)
+   {
+      # icc on linux uses gnu ld. The following are gnu ld messages
+      # /tmp/iccYHwrGF.o: In function `ff()':
+      # 4.cpp:(.text+0x34): undefined reference to `gg()'
+      if (m/^(.+?:)( .+?`.+?':)$/)
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         srcscan($field1, $colors{"noteFileNameColor"});
+         srcscan($field2, $colors{"noteMessageColor"});
+         print("\n");
+      }
+      # test.cpp(6): error: identifier "c" is undefined
+      elsif (m/^(.+?)(\(\d+\):)(.+)$/) # filename:lineno:message
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+
+         if ($field3 =~ m/remark/)
+         {
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+            print($colors{"warningMessageColor"}, "\n", color("reset"));
+            while(<GCCOUT>)
+            {
+               if (m/^$/)
+               {
+                  last;
+               }
+               print($colors{"introMessageColor"}, $_, color("reset"));
+            }
+         }
+         else
+         {
+            # Error
+            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+            print($colors{"errorMessageColor"}, "\n", color("reset"));
+            while(<GCCOUT>)
+            {
+               if (m/^$/)
+               {
+                  last;
+               }
+               print($colors{"introMessageColor"}, $_, color("reset"));
+            }
+         }
+         print("\n");
+      }
+      # icc: error #10236: File not found:  '4.cpp'
+      elsif (m/^(icc|icpc): error #\d+: .+$/)
+      {
+         print($colors{"errorMessageColor"}, "$_", color("reset"));
+      }
+      elsif (m/^(.+?:)(.+)$/)
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         srcscan($field1, $colors{"errorFileNameColor"});
+         srcscan($field2, $colors{"errorMessageColor"});
+         print("\n");
+      }
+      else # Anything else.
+      {
+         # Doesn't seem to be a warning or an error. Print normally.
+         print(color("reset"), $_);
+      }
+   }
+}
+else
+{
+   while(<GCCOUT>)
+   {
+      print(color("reset"), $_);
    }
 }
 
