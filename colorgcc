@@ -326,7 +326,7 @@ while(<GCCOUT>)
    }
    else # Anything else.
    {
-      srcscan($_, undef);
+         srcscan($_, color("reset"));
    }
 }
 }
