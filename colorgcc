@@ -134,7 +134,11 @@ sub loadPreferences
       my $option = $1;
       my $value = $2;
 
-      if ($option eq "nocolor")
+      if ($option =~ m/Color/)
+      {
+          $colors{$option} = color($value);
+      }
+      elsif ($option eq "nocolor")
       {
 	 # The nocolor option lists terminal types, separated by
 	 # spaces, not to do color on.
@@ -142,10 +146,6 @@ sub loadPreferences
 	 {
 	    $nocolor{$term} = 1;
 	 }
-      }
-      elsif (defined $colors{$option})
-      {
-	 $colors{$option} = color($value);
       }
       else
       {
