@@ -452,19 +452,23 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
    {
       # "test.cpp", line 7: warning #2837-D: omission of explicit type is
       # nonstandard
+      # "test.c", line 8: remark #2177-D: variable "str" was
+      # declared but never referenced
+      # "test.c", line 9: error #2077-D: this declaration has no
+      # storage class or type specifier
       if (m/^(\".+?\",)( line [0-9]+:)(.+)$/) # filename:lineno:message
       {
          my $field1 = $1 || "";
          my $field2 = $2 || "";
          my $field3 = $3 || "";
 
-         if ($field3 =~ m/warning #/)
+         if ($field3 =~ m/error #/)
          {
-            # Warning
-            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
-            print($colors{"warningNumberColor"}, "$field2", color("reset"));
-            print($colors{"warningMessageColor"}, "$field3", color("reset"));
-            print($colors{"warningMessageColor"}, "\n", color("reset"));
+            # Error
+            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+            print($colors{"errorMessageColor"}, "\n", color("reset"));
             while(<GCCOUT>)
             {
                if (m/^$/)
@@ -476,11 +480,11 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
          }
          else
          {
-            # Error
-            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
-            print($colors{"errorNumberColor"}, "$field2", color("reset"));
-            print($colors{"errorMessageColor"}, "$field3", color("reset"));
-            print($colors{"errorMessageColor"}, "\n", color("reset"));
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+            print($colors{"warningMessageColor"}, "\n", color("reset"));
             while(<GCCOUT>)
             {
                if (m/^$/)
