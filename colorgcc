@@ -140,16 +140,16 @@ sub loadPreferences
       }
       elsif ($option eq "nocolor")
       {
-	 # The nocolor option lists terminal types, separated by
-	 # spaces, not to do color on.
-	 foreach my $term (split(' ', $value))
-	 {
-	    $nocolor{$term} = 1;
-	 }
+         # The nocolor option lists terminal types, separated by
+         # spaces, not to do color on.
+         foreach my $term (split(' ', $value))
+         {
+            $nocolor{$term} = 1;
+         }
       }
       else
       {
-	 $compilerPaths{$option} = $value;
+         $compilerPaths{$option} = $value;
       }
    }
    close(PREFS);
@@ -184,10 +184,11 @@ sub srcscan
    # escape sequence that returns to $normalColor.
 
    # Handle multi-line quotes.
-   if ($unfinishedQuote) {
+   if ($unfinishedQuote)
+   {
       if ($line =~ s/^([^\`]*?)\'/$1$srcoff\'/)
       {
-	 $unfinishedQuote = 0;
+         $unfinishedQuote = 0;
       }
    }
    if ($line =~ s/\`([^\']*?)$/\`$srcon$1/)
@@ -243,22 +244,22 @@ else
       # everything up-to and including our wrapper dir.
       if ($0 =~ m#(.*)/#)
       {
-	 # We were called with an explicit path, so trim that off the PATH.
-	 my $find = $1;
-	 $find = abs_path($1) unless $find =~ m#^/#;
-	 $ENV{'PATH'} =~ s#.*(^|:)\Q$find\E(:|$)##;
+         # We were called with an explicit path, so trim that off the PATH.
+         my $find = $1;
+         $find = abs_path($1) unless $find =~ m#^/#;
+         $ENV{'PATH'} =~ s#.*(^|:)\Q$find\E(:|$)##;
       }
       else
       {
-	 my(@dirs) = split(/:/, $ENV{'PATH'});
-	 while (defined($_ = shift @dirs))
-	 {
-	    if (-x "$_/$progName")
-	    {
-	       $ENV{'PATH'} = join(':', @dirs);
-	       last;
-	    }
-	 }
+         my(@dirs) = split(/:/, $ENV{'PATH'});
+         while (defined($_ = shift @dirs))
+         {
+            if (-x "$_/$progName")
+            {
+               $ENV{'PATH'} = join(':', @dirs);
+               last;
+            }
+         }
       }
       $compiler = $progName;
    }
@@ -271,7 +272,7 @@ else
    if (! -t STDOUT || $nocolor{$terminal})
    {
       exec $compiler, @ARGV
-	 or die("Couldn't exec");
+         or die("Couldn't exec");
    }
 
    # Keep the pid of the compiler process so we can get its return
@@ -282,37 +283,38 @@ else
 # Colorize the output from the compiler.
 if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
 {
-while(<GCCOUT>)
-{
-   if (m#^(.+?\.[^:/ ]+):([0-9]+):(.*)$#) # filename:lineno:message
+   while(<GCCOUT>)
    {
-      my $field1 = $1 || "";
-      my $field2 = $2 || "";
-      my $field3 = $3 || "";
-
-      if ($field3 =~ m/\s+warning:.*/)
+      if (m#^(.+?\.[^:/ ]+):([0-9]+):(.*)$#) # filename:lineno:message
       {
-	 # Warning
-	 print($colors{"warningFileNameColor"}, "$field1:", color("reset"));
-	 print($colors{"warningNumberColor"}, "$field2:", color("reset"));
-	 srcscan($field3, $colors{"warningMessageColor"});
-      }
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+
+         if ($field3 =~ m/\s+warning:.*/)
+         {
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1:", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2:", color("reset"));
+            srcscan($field3, $colors{"warningMessageColor"});
+         }
          # main.cpp:145:2: #error print() is not implemented for this system
          elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/)
-	{
-	 # Error
-	 print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
-	 print($colors{"errorNumberColor"}, "$field2:", color("reset"));
-	 srcscan($field3, $colors{"errorMessageColor"});
-      } else
-      {
-	 # Note
-	 print($colors{"noteFileNameColor"}, "$field1:", color("reset"));
-	 print($colors{"noteNumberColor"}, "$field2:", color("reset"));
-	 srcscan($field3, $colors{"noteMessageColor"});
+         {
+            # Error
+            print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2:", color("reset"));
+            srcscan($field3, $colors{"errorMessageColor"});
+         }
+         else
+         {
+            # Note
+            print($colors{"noteFileNameColor"}, "$field1:", color("reset"));
+            print($colors{"noteNumberColor"}, "$field2:", color("reset"));
+            srcscan($field3, $colors{"noteMessageColor"});
+         }
+         print("\n");
       }
-      print("\n");
-   }
       elsif (m/^(.*from)(.+?:)(\d+[,:])$/) # message:filename:line
       {
          my $field1 = $1 || "";
@@ -324,23 +326,23 @@ while(<GCCOUT>)
          print($colors{"noteNumberColor"}, "$field3", color("reset"));
          print("\n");
       }
-   elsif (m/^:.+`.*'$/) # filename:message:
-   {
-      srcscan($_, $colors{"warningMessageColor"});
-   }
-   elsif (m/^(.*?):(.+):$/) # filename:message:
-   {
-      my $field1 = $1 || "";
-      my $field2 = $2 || "";
-      # No line number, treat as an "introductory" line of text.
-        srcscan($_, $colors{"introMessageColor"});
-   }
-   else # Anything else.
-   {
+      elsif (m/^:.+`.*'$/) # filename:message:
+      {
+         srcscan($_, $colors{"warningMessageColor"});
+      }
+      elsif (m/^(.*?):(.+):$/) # filename:message:
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         # No line number, treat as an "introductory" line of text.
+         srcscan($_, $colors{"introMessageColor"});
+      }
+      else # Anything else.
+      {
          # Doesn't seem to be a warning or an error. Print normally.
          print(color("reset"), $_);
+      }
    }
-}
 }
 elsif ($progName eq "CC" || $progName =~ "^sun[cC]" || $^O eq "solaris")
 {
