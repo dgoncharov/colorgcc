@@ -196,7 +196,7 @@ sub srcscan
    }
 
    # Single line quoting.
-   $line =~ s/\`(.*?)\'/\`$srcon$1$srcoff\'/g;
+   $line =~ s/[\`\'](.*?)\'/\`$srcon$1$srcoff\'/g;
 
    print($line, color("reset"));
 }
@@ -297,7 +297,8 @@ while(<GCCOUT>)
 	 print($colors{"warningNumberColor"}, "$field2:", color("reset"));
 	 srcscan($field3, $colors{"warningMessageColor"});
       }
-      elsif ($field3 =~ m/\s+error:.*/)
+         # main.cpp:145:2: #error print() is not implemented for this system
+         elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/)
 	{
 	 # Error
 	 print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
@@ -312,6 +313,17 @@ while(<GCCOUT>)
       }
       print("\n");
    }
+      elsif (m/^(.*from)(.+?:)(\d+[,:])$/) # message:filename:line
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+         # from /home/dgoncharov/src/main.cpp:63,
+         print($colors{"noteMessageColor"}, "$field1", color("reset"));
+         print($colors{"noteFileNameColor"}, "$field2", color("reset"));
+         print($colors{"noteNumberColor"}, "$field3", color("reset"));
+         print("\n");
+      }
    elsif (m/^:.+`.*'$/) # filename:message:
    {
       srcscan($_, $colors{"warningMessageColor"});
@@ -321,12 +333,12 @@ while(<GCCOUT>)
       my $field1 = $1 || "";
       my $field2 = $2 || "";
       # No line number, treat as an "introductory" line of text.
-	 print($colors{"introFileNameColor"}, "$field1:", color("reset"));
-	 print($colors{"introMessageColor"}, "$field2:\n", color("reset"));
+        srcscan($_, $colors{"introMessageColor"});
    }
    else # Anything else.
    {
-         srcscan($_, color("reset"));
+         # Doesn't seem to be a warning or an error. Print normally.
+         print(color("reset"), $_);
    }
 }
 }
@@ -437,6 +449,10 @@ elsif ($progName =~ "^g?xl[cC].*" || $^O eq "aix")
       {
           print($colors{"errorMessageColor"}, $_, color("reset"));
       }
+      elsif (m/\(I\) INFORMATION:/)
+      {
+         print($colors{"noteMessageColor"}, "$_", color("reset"));
+      }
       else # Anything else.
       {
          # Doesn't seem to be a warning or an error. Print normally.
@@ -451,29 +467,17 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
    {
       # "test.cpp", line 7: warning #2837-D: omission of explicit type is
       # nonstandard
+      # "test.c", line 8: remark #2177-D: variable "str" was
+      # declared but never referenced
+      # "test.c", line 9: error #2077-D: this declaration has no
+      # storage class or type specifier
       if (m/^(\".+?\",)( line [0-9]+:)(.+)$/) # filename:lineno:message
       {
          my $field1 = $1 || "";
          my $field2 = $2 || "";
          my $field3 = $3 || "";
 
-         if ($field3 =~ m/warning #/)
-         {
-            # Warning
-            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
-            print($colors{"warningNumberColor"}, "$field2", color("reset"));
-            print($colors{"warningMessageColor"}, "$field3", color("reset"));
-            print($colors{"warningMessageColor"}, "\n", color("reset"));
-            while(<GCCOUT>)
-            {
-               if (m/^$/)
-               {
-                  last;
-               }
-               print($colors{"introMessageColor"}, $_, color("reset"));
-            }
-         }
-         else
+         if ($field3 =~ m/error #/)
          {
             # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
@@ -486,7 +490,23 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
                {
                   last;
                }
-               print($colors{"introMessageColor"}, $_, color("reset"));
+               print($colors{"srcColor"}, $_, color("reset"));
+            }
+         }
+         else
+         {
+            # Warning
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+            print($colors{"warningMessageColor"}, "\n", color("reset"));
+            while(<GCCOUT>)
+            {
+               if (m/^$/)
+               {
+                  last;
+               }
+               print($colors{"srcColor"}, $_, color("reset"));
             }
          }
          print("\n");
