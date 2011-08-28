@@ -293,7 +293,6 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
 
          if ($field3 =~ m/\s+warning:.*/)
          {
-            # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
             srcscan("$field3\n", $colors{"warningMessageColor"});
@@ -302,14 +301,12 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
          elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/ ||
             $field3 =~ m/undefined reference/)
          {
-            # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
             srcscan("$field3\n", $colors{"errorMessageColor"});
          }
          else
          {
-            # Note
             print($colors{"noteFileNameColor"}, "$field1", color("reset"));
             print($colors{"noteNumberColor"}, "$field2", color("reset"));
             srcscan("$field3\n", $colors{"noteMessageColor"});
@@ -374,14 +371,12 @@ elsif ($progName eq "CC" || $progName =~ "^sun[cC]" || $^O eq "solaris")
 
          if ($field3 =~ m/Warning/)
          {
-            # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
             print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
          }
          else
          {
-            # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
             print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
@@ -430,14 +425,12 @@ elsif ($progName =~ "^g?xl[cC].*" || $^O eq "aix")
 
          if ($field3 =~ m/\((W|I)\)/)
          {
-            # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
             print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
          }
          else
          {
-            # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
             print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
@@ -489,7 +482,6 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
 
          if ($field3 =~ m/error #/)
          {
-            # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
             print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
@@ -504,7 +496,6 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
          }
          else
          {
-            # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
             print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
@@ -565,7 +556,6 @@ elsif ($progName eq "icc" || $progName eq "icpc")
 
          if ($field3 =~ m/remark/)
          {
-            # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
             print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
@@ -580,7 +570,6 @@ elsif ($progName eq "icc" || $progName eq "icpc")
          }
          else
          {
-            # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
             print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
