@@ -1,20 +1,31 @@
 2.0.2:
 
     2011.08.28
-	set version to 2.0.2
-	remove redundant comments
-	gcc improvement: add support for another syntax of undefined reference
-	update .colorgccrc
-	gcc refactoring: have comma inside matched subexpressions
-	refactor to have less code
-	gcc bugfix: show intro filename in introFileNameColor
-	gcc bugfix: show "undefined reference" messages in error colors
+    show intro messages in green
+    set version to 2.0.2
+    remove redundant comments
+    gcc improvement: add support for another syntax of undefined reference
+    update .colorgccrc
+    gcc refactoring: have comma inside matched subexpressions
+    refactor to have less code
+    gcc bugfix: show intro filename in introFileNameColor
+    gcc bugfix: show "undefined reference" messages in error colors
 
 2.0.1:
 
     2011.08.13
-    Added support for the sun, ibm, hp and intel compilers.
-    Enhanced gcc support.
+    set version to 2.0.1
+    add original (1.3.2) colorgccrc
+    add original (1.3.2) COPYING, CREDITS, ChangeLog, INSTALL and README
+    fix gcc note message color
+    run srcscan() on gcc intro messages
+    colorize "from header" gcc messages as notes
+    consider compilers in config file
+    do not colorize unrecognized gcc output
+    add support for the sun, ibm, hp and intel c and c++ compilers
+    remove trailing spaces
+    initial commit of colorgcc-1.3.2-r5 with 3 gentoo patches
+    first release by dgoncharov
 
 1.3.2:
 
@@ -35,12 +46,12 @@
    Modified the colorizing loop to be more strict. It was colorizing 
    text that looked almost, but not quite exactly like, warning
    and error messages.
-	
+
    colorgcc was not exiting with the return code of the compiler process,
    confusing make. Fixed.
 
    Added a "Gotcha" section to the INSTALL.
-	
+
    Added a CREDITS file.
 
    Added a COPYING file (copy of the GPL).
