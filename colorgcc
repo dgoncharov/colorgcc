@@ -299,7 +299,8 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             srcscan($field3, $colors{"warningMessageColor"});
          }
          # main.cpp:145:2: #error print() is not implemented for this system
-         elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/)
+         elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/ ||
+            $field3 =~ m/undefined reference/)
          {
             # Error
             print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
