@@ -285,7 +285,7 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
 {
    while(<GCCOUT>)
    {
-      if (m#^(.+?\.[^:/ ]+):([0-9]+):(.*)$#) # filename:lineno:message
+      if (m#^(.+?\.[^:/ ]+:)([0-9]+:)(.*)$#) # filename:lineno:message
       {
          my $field1 = $1 || "";
          my $field2 = $2 || "";
@@ -294,8 +294,8 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
          if ($field3 =~ m/\s+warning:.*/)
          {
             # Warning
-            print($colors{"warningFileNameColor"}, "$field1:", color("reset"));
-            print($colors{"warningNumberColor"}, "$field2:", color("reset"));
+            print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+            print($colors{"warningNumberColor"}, "$field2", color("reset"));
             srcscan("$field3\n", $colors{"warningMessageColor"});
          }
          # main.cpp:145:2: #error print() is not implemented for this system
@@ -303,15 +303,15 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             $field3 =~ m/undefined reference/)
          {
             # Error
-            print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
-            print($colors{"errorNumberColor"}, "$field2:", color("reset"));
+            print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+            print($colors{"errorNumberColor"}, "$field2", color("reset"));
             srcscan("$field3\n", $colors{"errorMessageColor"});
          }
          else
          {
             # Note
-            print($colors{"noteFileNameColor"}, "$field1:", color("reset"));
-            print($colors{"noteNumberColor"}, "$field2:", color("reset"));
+            print($colors{"noteFileNameColor"}, "$field1", color("reset"));
+            print($colors{"noteNumberColor"}, "$field2", color("reset"));
             srcscan("$field3\n", $colors{"noteMessageColor"});
          }
       }
