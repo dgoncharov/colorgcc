@@ -298,6 +298,9 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             srcscan("$field3\n", $colors{"warningMessageColor"});
          }
          # main.cpp:145:2: #error print() is not implemented for this system
+         # gcc produces such "undefined reference" messages when debugging info
+         # is available.
+         # util.h:92: undefined reference to `util::read(int*, char const*);
          elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/ ||
             $field3 =~ m/undefined reference/)
          {
@@ -312,6 +315,7 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             srcscan("$field3\n", $colors{"noteMessageColor"});
          }
       }
+      # gcc produces such "undefined reference" messages w/o debugging info.
       # main.cpp:(.text+0x13): undefined reference to `floor(double)'
       elsif (m/^(.+?:)(\(.+?\):)( undefined reference to `.+?')$/)
       {
