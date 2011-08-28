@@ -331,12 +331,13 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
       {
          srcscan($_, $colors{"warningMessageColor"});
       }
-      elsif (m/^(.*?):(.+):$/) # filename:message:
+      elsif (m/^(.*?:)(.+:)$/) # filename:message:
       {
          my $field1 = $1 || "";
          my $field2 = $2 || "";
          # No line number, treat as an "introductory" line of text.
-         srcscan($_, $colors{"introMessageColor"});
+         print($colors{"introFileNameColor"}, "$field1", color("reset"));
+         srcscan("$field2\n", $colors{"introMessageColor"});
       }
       else # Anything else.
       {
