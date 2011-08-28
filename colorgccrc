@@ -36,8 +36,8 @@ nocolor: dumb
 
 # Text between ` and ' is usually source code.
 srcColor: cyan
-introFileNameColor: cyan
-introMessageColor: cyan
+introFileNameColor: green
+introMessageColor: green
 
 # Warnings and errors both have similar formats:
 #    filename:999:Message
