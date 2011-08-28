@@ -23,7 +23,6 @@
 # Only define the paths to the actual location of the various compilers if
 # you need to do something weird.  For normal installs, we'll figure out
 # who to call next automatically.
-# (Currently, colorgcc only understands these: g++ gcc c++ cc)
 ##g++: /usr/bin/g++
 ##gcc: /usr/bin/gcc
 ##c++: /usr/bin/c++
@@ -40,20 +39,19 @@ srcColor: cyan
 introFileNameColor: cyan
 introMessageColor: cyan
 
-# Text other than a warning or error.
-introColor: cyan
-
 # Warnings and errors both have similar formats:
 #    filename:999:Message
 # Each field may be assigned a different color.
 
-# Warnings
 warningFileNameColor: yellow
 warningNumberColor:   yellow
 warningMessageColor:  yellow
 
-# Errors
 errorFileNameColor: red
 errorNumberColor:   red
 errorMessageColor:  red
+
+noteFileNameColor: green
+noteNumberColor:   green
+noteMessageColor:  green
 
