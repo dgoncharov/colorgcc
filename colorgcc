@@ -315,6 +315,16 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             srcscan("$field3\n", $colors{"noteMessageColor"});
          }
       }
+      # main.cpp:(.text+0x13): undefined reference to `floor(double)'
+      elsif (m/^(.+?:)(\(.+?\):)( undefined reference to `.+?')$/)
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+         print($colors{"errorFileNameColor"}, "$field1", color("reset"));
+         print($colors{"errorNumberColor"}, "$field2", color("reset"));
+         srcscan("$field3\n", $colors{"errorMessageColor"});
+      }
       elsif (m/^(.*from)(.+?:)(\d+[,:])$/) # message:filename:line
       {
          my $field1 = $1 || "";
