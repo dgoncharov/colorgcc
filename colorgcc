@@ -296,7 +296,7 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             # Warning
             print($colors{"warningFileNameColor"}, "$field1:", color("reset"));
             print($colors{"warningNumberColor"}, "$field2:", color("reset"));
-            srcscan($field3, $colors{"warningMessageColor"});
+            srcscan("$field3\n", $colors{"warningMessageColor"});
          }
          # main.cpp:145:2: #error print() is not implemented for this system
          elsif ($field3 =~ m/\s+error:.*/ || $field3 =~ m/\d+:.*?#error.*/ ||
@@ -305,16 +305,15 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
             # Error
             print($colors{"errorFileNameColor"}, "$field1:", color("reset"));
             print($colors{"errorNumberColor"}, "$field2:", color("reset"));
-            srcscan($field3, $colors{"errorMessageColor"});
+            srcscan("$field3\n", $colors{"errorMessageColor"});
          }
          else
          {
             # Note
             print($colors{"noteFileNameColor"}, "$field1:", color("reset"));
             print($colors{"noteNumberColor"}, "$field2:", color("reset"));
-            srcscan($field3, $colors{"noteMessageColor"});
+            srcscan("$field3\n", $colors{"noteMessageColor"});
          }
-         print("\n");
       }
       elsif (m/^(.*from)(.+?:)(\d+[,:])$/) # message:filename:line
       {
@@ -324,8 +323,7 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
          # from /home/dgoncharov/src/main.cpp:63,
          print($colors{"noteMessageColor"}, "$field1", color("reset"));
          print($colors{"noteFileNameColor"}, "$field2", color("reset"));
-         print($colors{"noteNumberColor"}, "$field3", color("reset"));
-         print("\n");
+         print($colors{"noteNumberColor"}, "$field3\n", color("reset"));
       }
       elsif (m/^:.+`.*'$/) # filename:message:
       {
@@ -369,16 +367,15 @@ elsif ($progName eq "CC" || $progName =~ "^sun[cC]" || $^O eq "solaris")
             # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
-            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
          }
          else
          {
             # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
-            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
          }
-         print("\n");
       }
       # ld: fatal: file test.mk: unknown file type
       # ld: fatal: File processing errors. No output written to a.out
@@ -426,16 +423,15 @@ elsif ($progName =~ "^g?xl[cC].*" || $^O eq "aix")
             # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
-            print($colors{"warningMessageColor"}, "$field3", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
          }
          else
          {
             # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
-            print($colors{"errorMessageColor"}, "$field3", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
          }
-         print("\n");
       }
       # /bb/util/version10-082009/usr/vacpp/bin/.orig/xlC_r: 1501-218 (W) file
       # test.mk contains an incorrect file suffix
@@ -486,8 +482,7 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
             # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
-            print($colors{"errorMessageColor"}, "$field3", color("reset"));
-            print($colors{"errorMessageColor"}, "\n", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
             while(<GCCOUT>)
             {
                if (m/^$/)
@@ -502,8 +497,7 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
             # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
-            print($colors{"warningMessageColor"}, "$field3", color("reset"));
-            print($colors{"warningMessageColor"}, "\n", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
             while(<GCCOUT>)
             {
                if (m/^$/)
@@ -550,8 +544,7 @@ elsif ($progName eq "icc" || $progName eq "icpc")
          my $field1 = $1 || "";
          my $field2 = $2 || "";
          srcscan($field1, $colors{"noteFileNameColor"});
-         srcscan($field2, $colors{"noteMessageColor"});
-         print("\n");
+         srcscan("$field2\n", $colors{"noteMessageColor"});
       }
       # test.cpp(6): error: identifier "c" is undefined
       elsif (m/^(.+?)(\(\d+\):)(.+)$/) # filename:lineno:message
@@ -565,8 +558,7 @@ elsif ($progName eq "icc" || $progName eq "icpc")
             # Warning
             print($colors{"warningFileNameColor"}, "$field1", color("reset"));
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
-            print($colors{"warningMessageColor"}, "$field3", color("reset"));
-            print($colors{"warningMessageColor"}, "\n", color("reset"));
+            print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
             while(<GCCOUT>)
             {
                if (m/^$/)
@@ -581,8 +573,7 @@ elsif ($progName eq "icc" || $progName eq "icpc")
             # Error
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
             print($colors{"errorNumberColor"}, "$field2", color("reset"));
-            print($colors{"errorMessageColor"}, "$field3", color("reset"));
-            print($colors{"errorMessageColor"}, "\n", color("reset"));
+            print($colors{"errorMessageColor"}, "$field3\n", color("reset"));
             while(<GCCOUT>)
             {
                if (m/^$/)
@@ -604,8 +595,7 @@ elsif ($progName eq "icc" || $progName eq "icpc")
          my $field1 = $1 || "";
          my $field2 = $2 || "";
          srcscan($field1, $colors{"errorFileNameColor"});
-         srcscan($field2, $colors{"errorMessageColor"});
-         print("\n");
+         srcscan("$field2\n", $colors{"errorMessageColor"});
       }
       else # Anything else.
       {
