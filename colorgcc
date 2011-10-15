@@ -529,6 +529,12 @@ elsif ($progName eq "aCC" || $^O eq "hpux")
       {
          print($colors{"errorMessageColor"}, $_, color("reset"));
       }
+      # aCC: warning 930: the +Orelaxed_debug option is not valid at this
+      # opt_level.
+      elsif (m/^aCC: warning \d+: .+$/)
+      {
+         print($colors{"warningMessageColor"}, $_, color("reset"));
+      }
       else # Anything else.
       {
          # Doesn't seem to be a warning or an error. Print normally.
