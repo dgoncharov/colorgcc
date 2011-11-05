@@ -1,4 +1,10 @@
+2.0.4:
+
+    2011.11.05
+    gcc: show ld warnings w/o -g in the warning colors
+
 2.0.3:
+
     2011.10.15
     aCC: show "warning 930" message in the warning color
     add examples of "undefined reference" messages
