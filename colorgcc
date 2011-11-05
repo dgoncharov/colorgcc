@@ -336,6 +336,17 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
          print($colors{"noteFileNameColor"}, "$field2", color("reset"));
          print($colors{"noteNumberColor"}, "$field3\n", color("reset"));
       }
+      # node.cpp:(.text+0x3a86): warning: the use of `mktemp' is
+      # dangerous, better use `mkstemp'
+      elsif (m/^(.+?:)(\(.+?\):)( warning: .+?)$/)
+      {
+         my $field1 = $1 || "";
+         my $field2 = $2 || "";
+         my $field3 = $3 || "";
+         print($colors{"warningFileNameColor"}, "$field1", color("reset"));
+         print($colors{"warningNumberColor"}, "$field2", color("reset"));
+         srcscan("$field3\n", $colors{"warningMessageColor"});
+      }
       elsif (m/^:.+`.*'$/) # filename:message:
       {
          srcscan($_, $colors{"warningMessageColor"});
