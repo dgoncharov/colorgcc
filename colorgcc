@@ -285,7 +285,7 @@ if ($progName eq "gcc" || $progName eq "g++" || $^O eq "linux")
 {
    while(<GCCOUT>)
    {
-      if (m#^(.+?\.[^:/ ]+:)([0-9]+:)(.*)$#) # filename:lineno:message
+      if (m#^(.+?\.[^:/ ]+:)(\d+:)(.*)$#) # filename:lineno:message
       {
          my $field1 = $1 || "";
          my $field2 = $2 || "";
