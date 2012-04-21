@@ -390,6 +390,18 @@ elsif ($progName eq "CC" || $progName =~ "^sun[cC]" || $^O eq "solaris")
             print($colors{"warningNumberColor"}, "$field2", color("reset"));
             print($colors{"warningMessageColor"}, "$field3\n", color("reset"));
          }
+         # "sstream.h", line 345: Warning, hidef: std::basic_stringstream
+         # <char, std::char_traits<char>, std::allocator<char>>::rdbuf hides
+         # the function std::ios::rdbuf(std::streambuf *).
+         # "main.cpp", line 740:     Where, temwhilespec: While
+         # specializing "std::basic_stringstream<char, std::char_traits<char>,
+         # std::allocator<char>>".
+         elsif ($field3 =~ m/Where,/)
+         {
+            print($colors{"noteFileNameColor"}, "$field1", color("reset"));
+            print($colors{"noteNumberColor"}, "$field2", color("reset"));
+            print($colors{"noteMessageColor"}, "$field3\n", color("reset"));
+         }
          else
          {
             print($colors{"errorFileNameColor"}, "$field1", color("reset"));
